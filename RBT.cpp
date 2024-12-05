@@ -241,12 +241,48 @@ private:
         }
         root->setBlack();  // ensure the root is always black
     }
+
+    Node* findNode(int data){
+        Node* current = root;
+
+        while(current != nullptr){
+            if(data == current->data)
+                return current;
+            else if (data < current->data)
+                current = current->getLeft();
+            else
+                current = current->getRight();
+        }
+        return nullptr; // node doesn't exist
+    }
+
+    void replaceNode(Node* oldNode , Node* newNode){
+        if(oldNode->getParent() == nullptr) // old node is root
+            root = newNode;
+        else if(oldNode == oldNode->getParent()->getLeft()) // old is left child
+            oldNode->getParent()->setLeft(newNode);
+        else // old is right child
+            oldNode->getParent()->setRight(newNode);
+
+        if (newNode != nullptr) {
+            newNode->setParent(oldNode->getParent());
+        }
+    }
+
+    Node* getMinimum(Node* node){
+        while(node->getLeft() != nullptr){
+            node = node->getLeft();
+        }
+        return node;
+    }
+
+//    void fixDeletion(Node* node){}
 public:
     RBT(){
         root = nullptr;
     }
 
-    void insert(int data){
+    void insertion(int data){
         Node *newNode = new Node(data);
 
         if(root == nullptr){
@@ -319,6 +355,38 @@ public:
             cout << '\n'; // Print a newline after traversal
         }
     }
+
+//    void deletion(int data){
+//        Node* nodeToDelete = findNode(data);
+//
+//        if(nodeToDelete == nullptr){
+//            cout << "Node doesn't exist." << '\n';
+//            return;
+//        }
+//
+//        Node* y = nodeToDelete; // node i want delete
+//        Node* x = nullptr; // child that i will replace with
+//        Color yColor = y->color;
+//
+//        if(nodeToDelete->getLeft() == nullptr){ // no left child
+//            x = nodeToDelete->getRight();
+//            replaceNode(nodeToDelete , x);
+//        }
+//        else if (nodeToDelete->getRight() == nullptr) { // no right child
+//            x = nodeToDelete->getLeft();
+//            replaceNode(nodeToDelete, x);
+//        }
+//        else{
+//            y = getMinimum(nodeToDelete->getRight()); // use successor
+//            yColor = y->color;
+//            x = y->getRight();
+//
+//            if(nodeToDelete == y->getParent()){
+//                if(x != nullptr)
+//
+//            }
+//        }
+//    }
 };
 
 
@@ -343,7 +411,7 @@ int main(){
             {
                 cout << "please enter the element: " << '\n';
                 cin >> element;
-                tree.insert(element);
+                tree.insertion(element);
                 continue;
             }
             case 3:
@@ -382,19 +450,3 @@ int main(){
 
     return 0;
 }
-
-
-/*
-
-private:
-
-    void fixDelete(Node* x);
-    void transplant(Node* u, Node* v);
-
-
-
-  public
-
-    void remove(int data);
-
- */
