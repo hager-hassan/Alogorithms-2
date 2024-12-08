@@ -1,0 +1,82 @@
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+// Skip List Node Definition
+struct Node {
+    int value;
+    vector<Node*> forward; // Array of forward pointers for each level
+
+    Node(int value, int level) : value(value), forward(level, nullptr) {}
+};
+
+// Skip List Class Definition
+class SkipList {
+private:
+    Node* header;      // The header (sentinel) node
+    int maxLevel;      // The maximum level of the skip list
+    int currentLevel;  // Current level of the skip list
+
+public:
+    SkipList(int maxLevel = 16) : maxLevel(maxLevel), currentLevel(0) {
+        header = new Node(-1, maxLevel);  // Initialize the header with a dummy value (-1)
+        srand(time(0));  // Seed the random number generator
+    }
+
+    // Generate a random level for a new node
+    int randomLevel() {
+        int level = 1;
+        while ((rand() % 2) && level < maxLevel) { // Randomly decide if the node should go to a higher level
+            level++;
+        }
+        return level;
+    }
+
+    // Insert a value into the skip list
+    void insert(int value) {
+        vector<Node*> update(maxLevel, nullptr);  // Store the nodes where we need to update pointers
+        Node* current = header;
+
+        // Start from the highest level and move downwards
+        for (int i = currentLevel - 1; i >= 0; i--) {
+            while (current->forward[i] != nullptr && current->forward[i]->value < value) {
+                current = current->forward[i];
+            }
+            update[i] = current;  // Store the node where the forward pointer needs to be updated
+        }
+
+        current = current->forward[0];  // Move to the next level (lowest level)
+        
+        // If the value doesn't exist, insert it
+        if (current == nullptr || current->value != value) {
+            int level = randomLevel();  // Determine the level for the new node
+            if (level > currentLevel) {
+                for (int i = currentLevel; i < level; i++) {
+                    update[i] = header;  // Extend the update array
+                }
+                currentLevel = level;
+            }
+
+            Node* newNode = new Node(value, level);
+            for (int i = 0; i < level; i++) {
+                newNode->forward[i] = update[i]->forward[i];  // Set the forward pointers
+                update[i]->forward[i] = newNode;  // Update the forward pointers at the levels
+            }
+        }
+    }
+
+    // Display the Skip List (for testing and visualization)
+    void display() {
+        for (int i = 0; i < currentLevel; i++) {
+            Node* node = header->forward[i];
+            cout << "Level " << i + 1 << ": ";
+            while (node != nullptr) {
+                cout << node->value << " ";
+                node = node->forward[i];
+            }
+            cout << endl;
+        }
+    }
+};
