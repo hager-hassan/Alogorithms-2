@@ -1,0 +1,38 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Function to hash a key using the Division Method
+int hashDivision(int key, int tableSize) {
+    return key % tableSize;
+}
+
+int main() {
+    int tableSize;
+    int numKeys;
+
+    // Ask the user for the size of the hash table
+    cout << "Enter the size of the hash table: ";
+    cin >> tableSize;
+
+    // Ask the user for the number of keys
+    cout << "Enter the number of keys: ";
+    cin >> numKeys;
+
+    vector<int> keys(numKeys);
+
+    // Ask the user to input the keys
+    cout << "Enter the keys:" << endl;
+    for (int i = 0; i < numKeys; i++) {
+        cout << "Key " << (i + 1) << ": ";
+        cin >> keys[i];
+    }
+
+    // Display the hash values for the keys
+    cout << "\nHash values using Division Method:" << endl;
+    for (int key : keys) {
+        int hashValue = hashDivision(key, tableSize);
+        cout << "Key: " << key << " -> Hash Value: " << hashValue << endl;
+    }
+
+    return 0;}
