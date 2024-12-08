@@ -1,0 +1,61 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+unsigned int foldShiftingHash(const string &key, unsigned int boundary) {
+    unsigned int hashValue = 0;
+    int partSize = 2;
+
+    for (size_t i = 0; i < key.length(); i += partSize) {
+        unsigned int part = 0;
+        for (int j = i; j < i + partSize && j < key.length(); ++j) {
+            part = part * 10 + (key[j] - '0');
+        }
+        hashValue += part;
+    }
+
+    return hashValue % boundary;
+}
+
+unsigned int foldBoundaryHash(const string &key, unsigned int boundary) {
+    unsigned int hashValue = 0;
+    int partSize = 2;
+    
+    unsigned int parts[4];
+
+    for (size_t i = 0; i < key.length(); i += partSize) {
+        unsigned int part = 0;
+        for (int j = i; j < i + partSize && j < key.length(); ++j) {
+            part = part * 10 + (key[j] - '0');
+        }
+        parts[i / partSize] = part;
+    }
+
+    swap(parts[0], parts[3]);
+    swap(parts[1], parts[2]);
+
+    for (int i = 0; i < 4; ++i) {
+        hashValue += parts[i];
+    }
+
+    return hashValue % boundary;
+}
+
+int main() {
+    string key;
+    unsigned int boundary;
+
+    cout << "Enter a number as key for hashing: ";
+    cin >> key;
+
+    cout << "Enter a boundary value (for addressing, like 100): ";
+    cin >> boundary;
+
+    unsigned int foldShiftingResult = foldShiftingHash(key, boundary);
+    cout << "Final Fold-Shifting Hash value: " << foldShiftingResult << endl;
+
+    unsigned int foldBoundaryResult = foldBoundaryHash(key, boundary);
+    cout << "Final Fold-Boundary Hash value: " << foldBoundaryResult << endl;
+
+    return 0;
+}
