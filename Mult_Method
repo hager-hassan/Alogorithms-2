@@ -1,0 +1,47 @@
+#include <iostream>
+#include <vector>
+#include <cmath> 
+using namespace std;
+
+// Function to hash a key using the Multiplication Method
+int hashMultiplication(int key, int tableSize) {
+    const double A = 0.6180339887; 
+    
+    // Implement the formula: floor(m * (key * A mod 1))
+    double fractionalPart = fmod(key * A, 1.0); // (key * A mod 1)
+    return static_cast<int>(floor(tableSize * fractionalPart)); // floor(m * fractionalPart)
+}
+
+int main() {
+    int tableSize;
+    int numKeys;
+
+    
+    cout << "Enter the size of the hash table (n): ";
+    cin >> tableSize;
+
+    // Ask the user for the number of keys
+    cout << "Enter the number of keys: ";
+    cin >> numKeys;
+
+    vector<int> keys(numKeys);
+
+    // Ask the user to input the keys
+    cout << "Enter the keys:" << endl;
+    for (int i = 0; i < numKeys; i++) {
+        cout << "Key " << (i + 1) << ": ";
+        cin >> keys[i];
+    }
+
+    // Display the hash values for the keys
+    cout << "\nHash values using Multiplication Method:" << endl;
+    for (int key : keys) {
+        // Display formula explicitly
+        int hashValue = hashMultiplication(key, tableSize);
+        cout << "Key: " << key 
+             << " -> Hash Value: floor(" << tableSize 
+             << " * (" << key << " * A mod 1)) = " << hashValue << endl;
+    }
+
+    return 0;
+}
