@@ -1,0 +1,26 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int midSquareMethod(int key, int tableSize) {
+    long long squared = key * key;
+    cout << "\nSquared value: " << squared << endl;
+    string squaredStr = to_string(squared);
+    int midStart = squaredStr.length() / 2 - 1;
+    string midDigits = squaredStr.substr(midStart, 2);
+    cout << "Middle digits: " << midDigits << endl;
+    return stoi(midDigits) % tableSize;
+}
+
+int main() {
+    int key, tableSize;
+    cout << "Enter the key: ";
+    cin >> key;
+    cout << "Enter the hash table size: ";
+    cin >> tableSize;
+
+    int hashValue = midSquareMethod(key, tableSize);
+    cout << "\nHash value: " << hashValue << endl;   
+    return 0;
+}
