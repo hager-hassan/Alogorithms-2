@@ -1,0 +1,319 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class Chaining {
+    int size;
+    //double none = 0.0/0;
+    vector<list<int>> table;
+    public:
+    Chaining(int size) {
+        this->size = size;
+        table.resize(size);
+    }
+    int getKey(int value) {
+        return value % size;
+    }
+    void insert(int value) {
+        int key = getKey(value);
+        table[key].push_back(value);
+
+    }
+    void search(int value) {
+        int key = getKey(value);
+        int index = 0;
+        for (int val : table[key]) {
+            if (val == value) {
+                cout <<"Number "<<value<<" found at "<< key <<", position "<<index<< endl;
+                return;
+            }
+            index++;
+        }
+        cout <<"Number "<<value<<" not found." << endl;
+    }
+    bool found(int value) {
+        int key = getKey(value);
+        for (int val : table[key]) {
+            if (val == value) {
+                return true;
+            }
+        }
+        return false;
+    }
+    void deletion(int value) {
+        int key = getKey(value);
+        for (auto it = table[key].begin(); it != table[key].end(); it++) {
+            if (*it == value) {
+                table[key].erase(it);
+                cout <<"Number "<<value<<" deleted." << endl;
+                return;
+            }
+        }
+        cout<<"Number "<<value<<" not found." << endl;
+    }
+    void display() {
+        for (int i = 0; i < size; i++) {
+            cout<<"index "<<i<<": ";
+            if(table[i].empty())
+                cout<<" empty";
+            else {
+                for(int x:table[i])
+                    cout<<x<<"-->";
+            }
+            cout<<endl;
+        }
+    }
+};
+
+class Linear_Probing {
+    int size;
+    double none = 0.0/0;
+    vector<double> table;
+    public:
+    Linear_Probing(int size) {
+        this->size = size;
+        table.resize(size,none);
+    }
+    int getKey(int value) {
+        return value % size;
+    }
+    void insert(int value) {
+        int key = getKey(value);
+        int stop = key;
+        if(isnan(table[key]))
+            table[key] = value;
+        else {
+            while(!isnan(table[key])) {
+                key = (key+1) % size;
+                if(stop == key) {
+                    return;
+                }
+            }
+            table[key] = value;
+        }
+    }
+    void search(int value) {
+        int key = getKey(value);
+        bool found = false;
+        int start = key;
+        while(!isnan(table[key])) {
+            if(table[key] == value) {
+                found = true;
+                cout<<value<<" found at index "<<key<<endl;
+                return;
+            }
+            key = (key + 1) % size;
+            if(start == key)
+                break;
+        }
+        if(!found)
+            cout<<value<<" not found"<<endl;
+    }
+    bool found(int value) {
+        int key = getKey(value);
+        while(!isnan(table[key])) {
+            if(table[key] == value)
+                return true;
+            key = (key + 1) % size;
+        }
+        return false;
+    }
+    void deletion(int value) {
+        int key = getKey(value);
+        if(found(table[key])) {
+            table[key] = none;
+            cout<<value<<" deleted from index "<<key<<endl;
+        }
+        else
+            cout<<value<<" not found"<<endl;
+    }
+    void display() {
+        for (int i = 0; i < size; i++) {
+            cout<<"index "<<i<<": ";
+            if(isnan(table[i]))
+                cout<<"empty\n";
+            else
+                cout<<table[i]<<endl;
+        }
+    }
+};
+
+class Quad_Probing {
+    int size;
+    double none = 0.0/0;
+    vector<double> table;
+public:
+    Quad_Probing(int size) {
+        this->size = size;
+        table.resize(size,none);
+    }
+    int getKey(int value) {
+        return value % size;
+    }
+    void insert(int value) {
+        int key = getKey(value);
+        int stop = key;
+        int i = 1;
+        if(isnan(table[key]))
+            table[key] = value;
+        else {
+            while(!isnan(table[key])) {
+                key = (key+i*i) % size;
+                i++;
+                if(stop == key) {
+                    return;
+                }
+            }
+            table[key] = value;
+        }
+    }
+    void search(int value) {
+        int key = getKey(value);
+        bool found = false;
+        int start = key;
+        int i = 1;
+        while(!isnan(table[key])) {
+            if(table[key] == value) {
+                found = true;
+                cout<<value<<" found at index "<<key<<endl;
+                return;
+            }
+            key = (key + i*i) % size;
+            i++;
+
+        }
+        if(!found)
+            cout<<value<<" not found"<<endl;
+    }
+    bool found(int value) {
+        int key = getKey(value);
+        int i = 1;
+        while(!isnan(table[key])) {
+            if(table[key] == value)
+                return true;
+            key = (key + i*i) % size;
+            i++;
+        }
+        return false;
+    }
+    void deletion(int value) {
+        int key = getKey(value);
+        if(found(table[key])) {
+            table[key] = none;
+            cout<<value<<" deleted from index "<<key<<endl;
+        }
+        else
+            cout<<value<<" not found"<<endl;
+    }
+    void display() {
+        for (int i = 0; i < size; i++) {
+            cout<<"index "<<i<<": ";
+            if(isnan(table[i]))
+                cout<<"empty\n";
+            else
+                cout<<table[i]<<endl;
+        }
+    }
+};
+
+class Double_Hashing {
+    int size;
+    int hash2;
+    double none = 0.0/0;
+    vector<double> table;
+public:
+    Double_Hashing(int size,int hash2) {
+        this->size = size;
+        this->hash2 = hash2;
+        table.resize(size,none);
+    }
+    int getKey1(int value) {
+        return value % size;
+    }
+    int getKey2(int value) {
+        return hash2 - (value % hash2);
+    }
+    void insert(int value) {
+        int key = getKey1(value);
+        int key2 = getKey2(value);
+        int indx = 1;
+        int stop = key;
+        if(isnan(table[key]))
+            table[key] = value;
+        else {
+            while(!isnan(table[key])) {
+                key = (key+key2*indx) % size;
+                indx++;
+                if(stop == key) {
+                    return;
+                }
+            }
+            table[key] = value;
+        }
+    }
+    void search(int value) {
+        int key = getKey1(value);
+        int key2 = getKey2(value);
+        bool found = false;
+        int indx = 1;
+        int start = key;
+        while(!isnan(table[key])) {
+            if(table[key] == value) {
+                found = true;
+                cout<<value<<" found at index "<<key<<endl;
+                return;
+            }
+            key = (key+key2*indx) % size;
+            indx++;
+            if(start == key)
+                break;
+        }
+        if(!found)
+            cout<<value<<" not found"<<endl;
+    }
+    void deletion(int value) {
+        int key = getKey1(value);
+        int key2 = getKey2(value);
+        int indx = 1;
+        for(auto val : table) {
+            if(table[key] == value) {
+                table[key] = none;
+                cout<<value<<" deleted from index "<<key<<endl;
+                return;
+            }
+            key = (key+key2*indx) % size;
+            indx++;
+        }
+        cout<<value<<" not found"<<endl;
+    }
+    void display() {
+        for (int i = 0; i < size; i++) {
+            cout<<"index "<<i<<": ";
+            if(isnan(table[i]))
+                cout<<"empty\n";
+            else
+                cout<<table[i]<<endl;
+        }
+    }
+};
+int main()
+{
+    //Linear_Probing lp(10);
+    //Chaining lp(10);
+    //Quad_Probing lp(10);
+    Double_Hashing lp(10,5);
+    lp.insert(0);
+    lp.insert(30);
+    lp.insert(1);
+    lp.insert(55);
+    lp.insert(16);
+    lp.insert(28);
+    lp.insert(13);
+    lp.insert(9);
+    lp.insert(26);
+    lp.display();
+    //lp.search(17);
+    //lp.deletion(30);
+    //lp.display();
+
+    return 0;
+}
