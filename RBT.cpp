@@ -409,7 +409,8 @@ public:
         }
         // Visit the root
         cout << node->data << " ";
-
+        getColor(node->data);
+        cout << '\n';
         // Recursively visit the left subtree
         preorderTraversal(node->getLeft());
 
